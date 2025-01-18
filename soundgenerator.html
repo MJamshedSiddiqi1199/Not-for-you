@@ -42,8 +42,12 @@
   <body>
     <div class="container">
       <h1>Sound Auto-Play</h1>
-      <audio id="audio" src="https://drive.google.com/file/d/1tA3eYROfXnVkOmobHbqeURKvVWSHqFSn/view?usp=drive_link" autoplay></audio>
+      <audio
+        id="audio"
+        src="https://drive.google.com/uc?export=download&id=1tA3eYROfXnVkOmobHbqeURKvVWSHqFSn"
+      ></audio>
       <div>
+        <button onclick="playSound()">Play Sound</button>
         <button onclick="stopSound()">Stop Sound</button>
       </div>
       <div>
@@ -64,19 +68,13 @@
       const durationSelect = document.getElementById("duration");
       let playTimeout;
 
-      // Automatically play the audio when the page loads
-      window.addEventListener("load", () => {
-        playSound();
-      });
-
       function stopSound() {
         audio.pause();
-        audio.currentTime = 0; // Reset to the beginning
         clearTimeout(playTimeout); // Clear any ongoing timeout
       }
 
       function playSound() {
-        const duration = parseInt(durationSelect.value) * 1000 || 5000; // Default to 5 seconds if not selected
+        const duration = parseInt(durationSelect.value) * 1000 || 5000; // Default to 5 seconds
         stopSound(); // Stop any ongoing playback
         audio.play();
 
