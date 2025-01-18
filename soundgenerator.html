@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto-Play Sound</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+      }
+
+      .container {
+        display: inline-block;
+        padding: 20px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+      }
+
+      select,
+      button {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Sound Auto-Play</h1>
+      <audio id="audio" src="cikini_ke_gondangdia.mp3" autoplay></audio>
+      <div>
+        <button onclick="stopSound()">Stop Sound</button>
+      </div>
+      <div>
+        <label for="duration">Play Sound For:</label>
+        <select id="duration" onchange="setPlayDuration()">
+          <option value="5">5 seconds</option>
+          <option value="10">10 seconds</option>
+          <option value="15">15 seconds</option>
+          <option value="20">20 seconds</option>
+          <option value="25">25 seconds</option>
+          <option value="30">30 seconds</option>
+        </select>
+      </div>
+    </div>
+
+    <script>
+      const audio = document.getElementById("audio");
+      const durationSelect = document.getElementById("duration");
+      let playTimeout;
+
+      // Automatically play the audio when the page loads
+      window.addEventListener("load", () => {
+        playSound();
+      });
+
+      function stopSound() {
+        audio.pause();
+        audio.currentTime = 0; // Reset to the beginning
+        clearTimeout(playTimeout); // Clear any ongoing timeout
+      }
+
+      function playSound() {
+        const duration = parseInt(durationSelect.value) * 1000 || 5000; // Default to 5 seconds if not selected
+        stopSound(); // Stop any ongoing playback
+        audio.play();
+
+        // Set a timeout to stop playback after the selected duration
+        playTimeout = setTimeout(() => {
+          stopSound();
+        }, duration);
+      }
+
+      function setPlayDuration() {
+        playSound(); // Restart the sound with the updated duration
+      }
+    </script>
+  </body>
+</html>
