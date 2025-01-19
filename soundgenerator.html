@@ -19,79 +19,71 @@
         background-color: #f9f9f9;
       }
 
-      select,
-      button {
+      select {
         margin: 10px;
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 5px;
       }
-
-      button {
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Sound Auto-Play</h1>
-      <!-- Auto-play enabled -->
-      <audio
-        id="audio"
-        src="https://raw.githubusercontent.com/MJamshedSiddiqi1199/Not-for-you/main/cikini_ke_gondangdia.mp3"
-      ></audio>
-      <div>
-        <button onclick="playSound()">Play Sound</button>
-        <button onclick="stopSound()">Stop Sound</button>
-      </div>
-      <div>
-        <label for="duration">Play Sound For:</label>
-        <select id="duration" onchange="setPlayDuration()">
-          <option value="5">5 seconds</option>
-          <option value="10">10 seconds</option>
-          <option value="15">15 seconds</option>
-          <option value="20">20 seconds</option>
-          <option value="25">25 seconds</option>
-          <option value="30">30 seconds</option>
-        </select>
-      </div>
+      <h1>Auto-Playing Sound</h1>
+      <p>The sound will start playing automatically when the page loads.</p>
+      <label for="duration">Play Sound For:</label>
+      <select id="duration" onchange="setPlayDuration()">
+        <option value="5">5 seconds</option>
+        <option value="10">10 seconds</option>
+        <option value="15">15 seconds</option>
+        <option value="20">20 seconds</option>
+        <option value="25">25 seconds</option>
+        <option value="30">30 seconds</option>
+      </select>
     </div>
+
+    <audio id="audio" src="https://raw.githubusercontent.com/MJamshedSiddiqi1199/Not-for-you/main/cikini_ke_gondangdia.mp3" autoplay></audio>
 
     <script>
       const audio = document.getElementById("audio");
       const durationSelect = document.getElementById("duration");
       let playTimeout;
 
-      // Automatically play the sound when the page loads
-      window.addEventListener("load", () => {
-        playSound();
+      // Attempt to play audio immediately on load
+      window.addEventListener("load", async () => {
+        try {
+          await audio.play(); // Try autoplay
+        } catch (error) {
+          console.warn("Autoplay blocked: Attempting workaround");
+          requestInteractionToPlay();
+        }
       });
 
-      function stopSound() {
-        audio.pause();
-        clearTimeout(playTimeout); // Clear any ongoing timeout
-      }
+      // If autoplay is blocked, request user interaction
+      function requestInteractionToPlay() {
+        const interactionMessage = document.createElement("p");
+        interactionMessage.textContent = "Click anywhere on the page to start the sound.";
+        interactionMessage.style.color = "red";
+        interactionMessage.style.fontWeight = "bold";
+        document.body.appendChild(interactionMessage);
 
-      function playSound() {
-        const duration = parseInt(durationSelect.value) * 1000 || 5000; // Default to 5 seconds
-        stopSound(); // Stop any ongoing playback
-        audio.play();
-
-        // Set a timeout to stop playback after the selected duration
-        playTimeout = setTimeout(() => {
-          stopSound();
-        }, duration);
+        document.body.addEventListener("click", () => {
+          audio.play();
+          interactionMessage.remove(); // Remove the message after successful playback
+        }, { once: true });
       }
 
       function setPlayDuration() {
-        playSound(); // Restart the sound with the updated duration
+        const duration = parseInt(durationSelect.value) * 1000 || 5000; // Default to 5 seconds
+        clearTimeout(playTimeout); // Clear any existing timeout
+        audio.currentTime = 0; // Reset playback
+        audio.play();
+
+        // Stop playback after the selected duration
+        playTimeout = setTimeout(() => {
+          audio.pause();
+        }, duration);
       }
     </script>
   </body>
