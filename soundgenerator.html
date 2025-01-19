@@ -42,7 +42,7 @@
   <body>
     <div class="container">
       <h1>Sound Auto-Play</h1>
-      <!-- Updated link to point to your MP3 file -->
+      <!-- Auto-play enabled -->
       <audio
         id="audio"
         src="https://raw.githubusercontent.com/MJamshedSiddiqi1199/Not-for-you/main/cikini_ke_gondangdia.mp3"
@@ -68,6 +68,11 @@
       const audio = document.getElementById("audio");
       const durationSelect = document.getElementById("duration");
       let playTimeout;
+
+      // Automatically play the sound when the page loads
+      window.addEventListener("load", () => {
+        playSound();
+      });
 
       function stopSound() {
         audio.pause();
