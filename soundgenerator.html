@@ -19,71 +19,61 @@
         background-color: #f9f9f9;
       }
 
-      select {
+      button {
         margin: 10px;
         padding: 10px;
         font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Auto-Playing Sound</h1>
-      <p>The sound will start playing automatically when the page loads.</p>
-      <label for="duration">Play Sound For:</label>
-      <select id="duration" onchange="setPlayDuration()">
-        <option value="5">5 seconds</option>
-        <option value="10">10 seconds</option>
-        <option value="15">15 seconds</option>
-        <option value="20">20 seconds</option>
-        <option value="25">25 seconds</option>
-        <option value="30">30 seconds</option>
-      </select>
+      <p>The sound will start playing automatically when the page loads and loop until you stop it.</p>
+      <button onclick="stopSound()">Stop Sound</button>
     </div>
 
-    <audio id="audio" src="https://raw.githubusercontent.com/MJamshedSiddiqi1199/Not-for-you/main/cikini_ke_gondangdia.mp3" autoplay></audio>
+    <!-- Autoplay and looping audio -->
+    <audio
+      id="audio"
+      src="https://raw.githubusercontent.com/MJamshedSiddiqi1199/Not-for-you/main/cikini_ke_gondangdia.mp3"
+      autoplay
+      loop
+    ></audio>
 
     <script>
       const audio = document.getElementById("audio");
-      const durationSelect = document.getElementById("duration");
-      let playTimeout;
 
-      // Attempt to play audio immediately on load
+      // Attempt to play audio on page load and loop
       window.addEventListener("load", async () => {
         try {
           await audio.play(); // Try autoplay
         } catch (error) {
-          console.warn("Autoplay blocked: Attempting workaround");
-          requestInteractionToPlay();
+          console.warn("Autoplay blocked: Retrying with user interaction...");
+          // If autoplay is blocked, retry after user interaction
+          document.body.addEventListener(
+            "click",
+            () => {
+              audio.play();
+            },
+            { once: true }
+          );
         }
       });
 
-      // If autoplay is blocked, request user interaction
-      function requestInteractionToPlay() {
-        const interactionMessage = document.createElement("p");
-        interactionMessage.textContent = "Click anywhere on the page to start the sound.";
-        interactionMessage.style.color = "red";
-        interactionMessage.style.fontWeight = "bold";
-        document.body.appendChild(interactionMessage);
-
-        document.body.addEventListener("click", () => {
-          audio.play();
-          interactionMessage.remove(); // Remove the message after successful playback
-        }, { once: true });
-      }
-
-      function setPlayDuration() {
-        const duration = parseInt(durationSelect.value) * 1000 || 5000; // Default to 5 seconds
-        clearTimeout(playTimeout); // Clear any existing timeout
-        audio.currentTime = 0; // Reset playback
-        audio.play();
-
-        // Stop playback after the selected duration
-        playTimeout = setTimeout(() => {
-          audio.pause();
-        }, duration);
+      // Function to stop the audio
+      function stopSound() {
+        audio.pause();
+        audio.currentTime = 0; // Reset playback to the beginning
       }
     </script>
   </body>
